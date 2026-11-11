@@ -107,7 +107,7 @@ if (source === 'build') {
     for (const pg of fetched) {
       pages.push(pg);
       if (pg.status !== 200) continue;
-      for (const h of parsePage(pg.html, A).hrefs) {
+      for (const h of parsePage(pg.html, A).hrefs.filter((x) => !/["\\]/.test(x))) {
         const t = internalPath(h, config.site);
         if (t && !seen.has(t) && seen.size < A.maxPages) {
           seen.add(t);
@@ -144,7 +144,10 @@ for (const pg of pages) {
   const p = parsePage(pg.html, A);
   const xRobots = pg.headers?.get?.('x-robots-tag') ?? '';
   const noindex = /noindex/.test(p.robots) || /noindex/i.test(xRobots);
-  const links = p.hrefs.map((h) => internalPath(h, new URL(url, config.site).href)).filter(Boolean);
+  // href con comillas o barras escapadas (p. ej. contenido HTML guardado en JSON con \" de más).
+  const malformed = p.hrefs.filter((h) => /["\\]/.test(h));
+  for (const h of new Set(malformed)) err(url, `enlace mal escapado: href=${JSON.stringify(h)}`);
+  const links = p.hrefs.filter((h) => !/["\\]/.test(h)).map((h) => internalPath(h, new URL(url, config.site).href)).filter(Boolean);
   info[url] = { title: p.title, description: p.description, h1: p.h1s[0] ?? '', h2s: p.h2s, noindex, words: p.words, links, canonical: p.canonical };
 
   if (!p.lang) err(url, 'falta el atributo lang en <html>');
