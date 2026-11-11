@@ -1,0 +1,8 @@
+{
+  "_doc": "Universo de keywords. role: primary (la página la ataca como principal; una sola URL por keyword), secondary (la misma página la cubre), backlog (demanda comprobada sin página), watch (seguir, sin acción), discard (sin demanda o fuera de producto). Campos de volumen por mercado (es, mx…) y región (hisp); cpc en €; trend = variación 12 meses. Fuente y fecha en source/updated.",
+  "source": "",
+  "updated": "",
+  "keywords": [
+    { "kw": "ejemplo de keyword", "cluster": "ejemplo", "url": "/ejemplo", "role": "primary", "es": 0, "hisp": null, "cpc": 0, "trend": null, "note": "" }
+  ]
+}

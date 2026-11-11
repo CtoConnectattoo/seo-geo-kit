@@ -1,0 +1,15 @@
+{
+  "name": "seo-geo-kit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Motor compartido del agente SEO/GEO semanal de los proyectos de Connectattoo.",
+  "engines": { "node": ">=20" },
+  "bin": { "seo-collect": "bin/collect.mjs", "seo-audit": "bin/audit.mjs", "seo-validate": "bin/validate.mjs" },
+  "scripts": {
+    "collect": "node bin/collect.mjs",
+    "audit": "node bin/audit.mjs",
+    "validate": "node bin/validate.mjs",
+    "check": "node --check bin/collect.mjs && node --check bin/audit.mjs && node --check bin/validate.mjs"
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/CtoConnectattoo/seo-geo-kit/schema/config.schema.json",
+  "title": "seo/config.json de un proyecto que usa seo-geo-kit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project", "brand", "site", "gsc", "rules", "pageRecipe"],
+  "properties": {
+    "project": { "type": "string", "minLength": 1, "description": "Nombre corto del proyecto (kalmaa, inkup…)." },
+    "repo": { "type": "string", "pattern": "^[\\w.-]+/[\\w.-]+$", "description": "owner/name del repo en GitHub." },
+    "brand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "mentionPatterns": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Expresiones regulares (sin barras, se aplican con flag i) que cuentan como mención de la marca en SERP e IAs. Por defecto, el nombre y el dominio."
+        }
+      }
+    },
+    "site": { "type": "string", "format": "uri", "pattern": "^https?://[^/]+$", "description": "Origen canónico sin barra final, p. ej. https://kalmaa.io" },
+    "sitemaps": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Rutas o URLs de sitemaps (se siguen los índices). Por defecto [\"/sitemap.xml\", \"/sitemap-index.xml\"]."
+    },
+    "language": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$", "description": "Idioma del sitio (atributo lang esperado). Por defecto es." },
+    "gsc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["property"],
+      "properties": {
+        "property": { "type": "string", "pattern": "^(sc-domain:[a-z0-9.-]+|https?://.+/)$" },
+        "inspectMax": { "type": "integer", "minimum": 0, "description": "Máximo de URLs a inspeccionar por semana (cuota de Google: 2000/día por propiedad). Por defecto 100." }
+      }
+    },
+    "serp": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "country": { "type": "string", "pattern": "^[a-z]{2}$" },
+        "language": { "type": "string", "pattern": "^[a-z]{2}$" }
+      }
+    },
+    "volumeMarkets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "location", "language"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^[a-z_]+$", "description": "Clave en volumes.json (es, mx…)." },
+          "location": { "type": "string", "description": "Ubicación de Keyword Planner (Spain, Mexico…)." },
+          "language": { "type": "string", "description": "Idioma de Keyword Planner (Spanish, English…)." }
+        }
+      }
+    },
+    "ideas": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": { "type": "string" },
+        "language": { "type": "string" },
+        "max": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "minSearchVolume": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "newPage": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["field", "min"],
+            "properties": {
+              "field": { "type": "string", "description": "Campo de volumen en keywords.json (es, hisp…)." },
+              "min": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "description": "Basta con cumplir uno para justificar una página nueva (además de impresiones reales en GSC)."
+        },
+        "weeklyLimits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "newPages": { "type": "integer", "minimum": 0 },
+            "optimizations": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "apify": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "monthlyBudgetUsd": { "type": "number", "minimum": 0, "maximum": 19, "description": "Tope de este proyecto. La suma de todos los proyectos debe caber en el límite de la cuenta (19 $)." },
+        "geoEngines": {
+          "type": "array",
+          "items": { "enum": ["aiOverview", "aiMode", "chatGpt", "perplexity"] },
+          "description": "Motores para las preguntas GEO. Por defecto los cuatro."
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "command": { "type": "string", "description": "Comando de build (npm run build). Vacío si el sitio no se compila en el repo." },
+        "outputDirs": { "type": "array", "items": { "type": "string" }, "description": "Directorios candidatos con index.html, relativos al proyecto." },
+        "trailingSlash": { "type": "boolean", "description": "true si las URLs canónicas acaban en /. Por defecto false." }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mainSelector": { "enum": ["main", "body"] },
+        "minWords": { "type": "integer", "minimum": 0 },
+        "minInboundLinks": { "type": "integer", "minimum": 0 },
+        "thinContentExclude": { "type": "array", "items": { "type": "string" }, "description": "Regex de rutas a las que no se exige longitud mínima." },
+        "orphanExclude": { "type": "array", "items": { "type": "string" }, "description": "Regex de rutas que pueden no tener enlaces internos." },
+        "placeholderMarkers": { "type": "array", "items": { "type": "string" }, "description": "Marcadores que bloquean (se buscan como [MARCADOR)." },
+        "requireOgImage": { "type": "boolean" },
+        "maxPages": { "type": "integer", "minimum": 1, "description": "Límite del rastreo en vivo. Por defecto 200." }
+      }
+    },
+    "forbiddenClaims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pattern", "why"],
+        "properties": {
+          "pattern": { "type": "string", "minLength": 1, "description": "Regex (flag i) que no puede aparecer en una frase afirmativa." },
+          "why": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "negationWords": { "type": "array", "items": { "type": "string" }, "description": "Si la frase contiene una, la promesa prohibida se da por negada." },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files"],
+      "properties": {
+        "files": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "Rutas (relativas al proyecto) con reglas de marca y contenido. Mandan sobre el playbook." },
+        "skills": { "type": "array", "items": { "type": "string" }, "description": "Skills de marca y producto que el agente debe cargar si están disponibles." },
+        "drive": { "type": "array", "items": { "type": "string" }, "description": "Documentos de Drive de referencia (nombre o enlace)." }
+      }
+    },
+    "pageRecipe": { "type": "string", "minLength": 20, "description": "Cómo se crea y enlaza una página nueva en este stack." },
+    "protectedPaths": { "type": "array", "items": { "type": "string" }, "description": "Rutas que el agente nunca modifica." },
+    "pr": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": { "type": "string" },
+        "branchPrefix": { "type": "string" }
+      }
+    }
+  }
+}

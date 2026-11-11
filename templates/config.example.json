@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/CtoConnectattoo/seo-geo-kit/main/schema/config.schema.json",
+  "project": "miproyecto",
+  "repo": "CtoConnectattoo/miproyecto-landing",
+  "brand": { "name": "MiMarca", "mentionPatterns": ["mimarca"] },
+  "site": "https://mimarca.com",
+  "sitemaps": ["/sitemap.xml"],
+  "language": "es",
+  "gsc": { "property": "sc-domain:mimarca.com", "inspectMax": 100 },
+  "serp": { "country": "es", "language": "es" },
+  "volumeMarkets": [
+    { "key": "es", "location": "Spain", "language": "Spanish" },
+    { "key": "mx", "location": "Mexico", "language": "Spanish" }
+  ],
+  "ideas": { "location": "Spain", "language": "Spanish", "max": 100, "minSearchVolume": 10 },
+  "thresholds": {
+    "newPage": [{ "field": "es", "min": 30 }, { "field": "hisp", "min": 200 }],
+    "weeklyLimits": { "newPages": 1, "optimizations": 2 }
+  },
+  "apify": { "monthlyBudgetUsd": 6 },
+  "build": { "command": "npm run build", "outputDirs": ["dist"], "trailingSlash": false },
+  "audit": {
+    "mainSelector": "main",
+    "minWords": 300,
+    "thinContentExclude": ["aviso-legal", "privacidad", "cookies"],
+    "orphanExclude": ["aviso-legal", "privacidad", "cookies"]
+  },
+  "forbiddenClaims": [
+    { "pattern": "ventas garantizadas", "why": "promete ventas garantizadas" }
+  ],
+  "rules": {
+    "files": ["CLAUDE.md"],
+    "skills": ["mimarca-branding"],
+    "drive": []
+  },
+  "pageRecipe": "Describe aquí cómo se crea una página en este stack: fichero y layout, dónde se añade al menú o al pie, cómo se citan fuentes y cómo se comprueba antes del PR.",
+  "protectedPaths": ["src/pages/api/"],
+  "pr": { "base": "main", "branchPrefix": "seo/" }
+}
