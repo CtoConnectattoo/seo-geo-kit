@@ -52,7 +52,7 @@ La cuenta tiene un límite de **19 $/mes** para todos los proyectos. Cada proyec
 | Proyecto | Tope ($/mes) | Gasto típico |
 |---|---|---|
 | Kalmaa | 6 (hoy 10 en su agente propio, hasta migrar) | ~1,7 $ la semana con volúmenes, ~0,3 $ el resto |
-| Inkup | 6 | — |
+| Inkup | 6 | ~1,7 $ la semana con volúmenes, ~0,3 $ el resto (alta 2026-11-11) |
 | Reserva | 7 | — |
 
 No subas el límite de la cuenta sin el propietario.
