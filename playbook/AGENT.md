@@ -9,6 +9,7 @@ En la rutina tienes dos repos clonados: el **kit** (`seo-geo-kit`, este playbook
 1. Lee `$P/seo/config.json`. De ahí salen el dominio, la propiedad de Search Console, los mercados, el presupuesto, los umbrales, cómo se crea una página (`pageRecipe`) y lo que no se toca (`protectedPaths`).
 2. Lee **todas** las reglas de `config.rules.files` (normalmente `CLAUDE.md`) y, si están disponibles, las skills de `config.rules.skills`. **Mandan sobre este playbook**: claims, vocabulario, textos intocables, promesas prohibidas.
 3. Lee `$P/seo/keywords.json`, `$P/seo/geo-queries.json` y los informes de las últimas 4 semanas en `$P/seo/reports/`.
+4. Si existe el catálogo de producto (`config.product.catalog` o `$P/seo/producto/funcionalidades.json`), es la verdad sobre lo que el producto hace hoy: solo se comunican las funcionalidades `activa` (con sus `planes`, `limites` y `claims_permitidos`); nunca las `beta`, `oculta`, `en-desarrollo` ni `retirada`, ni sus `claims_prohibidos`. Si una regla del proyecto lo contradice, manda el catálogo en lo que es de producto (qué hace y qué no) y dilo en el informe.
 
 ## 1. Medir
 
@@ -44,7 +45,7 @@ Cada semana, como máximo `config.thresholds.weeklyLimits.newPages` páginas nue
 |---|---|
 | Demanda | Volumen por mercado (`volumes.json` o `keywords.json`) e impresiones en GSC |
 | Tendencia | Crecimiento de 12 meses |
-| Encaje con producto | ¿El producto lo hace hoy, según las reglas del proyecto? Si no, se descarta (0 aquí descarta la candidata) |
+| Encaje con producto | ¿El producto lo hace hoy, según el catálogo de producto o las reglas del proyecto? Si no, se descarta (0 aquí descarta la candidata) |
 | Se puede ganar | SERP (`serp.json`): si el top 10 son marcas grandes o la intención no encaja, baja |
 | Hueco | No hay ya una URL que la cubra; si la hay, se optimiza esa en vez de crear otra |
 
