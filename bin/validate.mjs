@@ -4,7 +4,7 @@
 import { loadProject, parseArgs } from '../lib/config.mjs';
 import { norm } from '../lib/text.mjs';
 
-const { config, keywords, geo } = loadProject(parseArgs()); // sale con 2 si config.json no es válido
+const { config, keywords, geo, product } = loadProject(parseArgs()); // sale con 2 si config.json no es válido
 const problems = [];
 const ROLES = new Set(['primary', 'secondary', 'backlog', 'watch', 'discard']);
 const seen = new Set();
@@ -24,6 +24,11 @@ for (const [i, k] of keywords.entries()) {
 if (!Array.isArray(geo.queries)) problems.push('geo-queries.json: falta queries[]');
 else if (geo.queries.length > 10) problems.push(`geo-queries.json: ${geo.queries.length} preguntas (máximo 10 por presupuesto)`);
 
-console.log(`${config.project}: config.json válido · ${keywords.length} keywords · ${geo.queries?.length ?? 0} preguntas GEO`);
+const productInfo = product
+  ? ` · catálogo de producto (${product.catalog.funcionalidades.length} funcionalidades: ${['activa', 'beta', 'oculta', 'en-desarrollo', 'retirada']
+      .map((e) => `${product.catalog.funcionalidades.filter((f) => f.estado === e).length} ${e}`)
+      .join(', ')})`
+  : '';
+console.log(`${config.project}: config.json válido · ${keywords.length} keywords · ${geo.queries?.length ?? 0} preguntas GEO${productInfo}`);
 problems.forEach((p) => console.log(`  ✗ ${p}`));
 process.exit(problems.length ? 1 : 0);

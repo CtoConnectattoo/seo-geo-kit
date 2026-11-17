@@ -11,10 +11,11 @@ import { extname, join } from 'node:path';
 import { loadProject, parseArgs } from '../lib/config.mjs';
 import { parsePage } from '../lib/html.mjs';
 import { follow, get, pool, sitemapUrls } from '../lib/http.mjs';
+import { productRules } from '../lib/product.mjs';
 import { makeCoverage, norm, sentences } from '../lib/text.mjs';
 
 const args = parseArgs();
-const { root, config, keywords } = loadProject(args);
+const { root, config, keywords, product } = loadProject(args);
 const { covers } = makeCoverage(config.language);
 const A = config.audit;
 const errors = [];
@@ -47,6 +48,9 @@ const thinExclude = re(A.thinContentExclude);
 const orphanExclude = re(A.orphanExclude);
 const placeholders = A.placeholderMarkers.length ? new RegExp(`\\[(${A.placeholderMarkers.join('|')})`) : null;
 const forbidden = config.forbiddenClaims.map((f) => ({ re: new RegExp(f.pattern, 'i'), why: f.why }));
+// Catálogo de producto (opcional): sus promesas prohibidas y las funcionalidades retiradas son errores como forbiddenClaims.
+const prod = product ? productRules(product) : null;
+const mentioned = new Set(); // ids de funcionalidades activas que alguna página menciona
 const negation = new RegExp(`(^|[^\\p{L}])(${config.negationWords.join('|')})(?=$|[^\\p{L}])`, 'iu');
 
 // ---------- Origen de las páginas ----------
@@ -176,10 +180,39 @@ for (const pg of pages) {
   if (placeholders?.test(pg.html)) err(url, `quedan marcadores [${A.placeholderMarkers.join(']/[')}]`);
   for (const s of sentences(p.text))
     for (const f of forbidden) if (f.re.test(s) && !negation.test(s)) err(url, `${f.why}: «${s.trim().slice(0, 90)}»`);
+  if (prod && !noindex) {
+    const notPublic = new Set();
+    const said = new Set();
+    for (const s of sentences(p.text)) {
+      // Como forbiddenClaims, pero sin contar las preguntas («¿Es un bot dentro de WhatsApp?» en una FAQ). Una vez por página y motivo.
+      const claim = s.replace(/¿[^?]*\?/g, ' ');
+      if (!negation.test(claim))
+        for (const f of prod.forbidden)
+          if (!said.has(f.why) && f.re.test(claim)) {
+            said.add(f.why);
+            err(url, `producto: ${f.why}: «${s.trim().slice(0, 90)}»`);
+          }
+      for (const n of prod.notPublic)
+        if (!notPublic.has(n.f.id) && n.res.some((r) => r.test(s))) {
+          notPublic.add(n.f.id);
+          warn(url, `producto: menciona «${n.label}» (${n.f.estado}, no se comunica): «${s.trim().slice(0, 90)}»`);
+        }
+      for (const c of prod.coherence)
+        for (const m of s.matchAll(c.re))
+          if (!c.allowed.has(m[1]) && !c.allowed.has(m[1].replace(/[.,]/g, '')))
+            warn(url, `producto: «${m[0].trim()}» no cuadra con los planes (${c.que}: ${c.list})`);
+    }
+    for (const x of prod.expected) if (!mentioned.has(x.f.id) && x.res.some((r) => r.test(p.text))) mentioned.add(x.f.id);
+  }
   if (noindex && sitemapSet.has(url)) err(url, 'noindex pero está en el sitemap');
   if (!noindex && sitemapSet.size && !sitemapSet.has(url)) warn(url, 'indexable pero no está en el sitemap');
   if (!noindex && p.words < A.minWords && !thinExclude?.test(url)) warn(url, `contenido corto (${p.words} palabras${p.hasMain ? '' : ', sin <main>'})`);
 }
+
+// ---------- Catálogo de producto: activas que la web no menciona ----------
+if (prod && product.checkUnmentioned)
+  for (const x of prod.expected)
+    if (!mentioned.has(x.f.id)) warnings.push(`producto: «${x.label}» está activa y ninguna página indexable la menciona`);
 
 // ---------- Enlaces internos y huérfanas ----------
 const inbound = {};
@@ -226,12 +259,13 @@ const result = {
   origin: source === 'build' ? outDir : config.site,
   sitemaps: sitemapsFound,
   pages: Object.values(info).filter((p) => p.title !== undefined).length,
+  product: product ? product.path : null,
   errors,
   warnings,
 };
 if (args.flags.has('json')) console.log(JSON.stringify({ ...result, info }, null, 2));
 else {
-  console.log(`Auditoría SEO · ${config.project} · ${source} (${result.origin}) · ${result.pages} páginas`);
+  console.log(`Auditoría SEO · ${config.project} · ${source} (${result.origin}) · ${result.pages} páginas${product ? ` · catálogo de producto: ${product.catalog.funcionalidades.length} funcionalidades` : ''}`);
   console.log(`\nErrores (${errors.length})`);
   errors.forEach((e) => console.log(`  ✗ ${e}`));
   console.log(`\nAvisos (${warnings.length})`);

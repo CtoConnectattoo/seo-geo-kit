@@ -143,6 +143,16 @@
         }
       }
     },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Catálogo de producto opcional (qué hace hoy el producto, según su código). Si no se indica, se usa seo/producto/funcionalidades.json cuando existe. La auditoría avisa de páginas que mencionan funcionalidades ocultas, en beta o sin construir, de funcionalidades activas que la web no menciona y de cifras de planes que no existen; las retiradas y las promesas prohibidas del catálogo se suman a forbiddenClaims.",
+      "properties": {
+        "catalog": { "type": "string", "minLength": 1, "description": "Ruta al JSON del catálogo, relativa al repo del proyecto (p. ej. seo/producto/funcionalidades.json)." },
+        "enabled": { "type": "boolean", "description": "false para ignorar el catálogo aunque exista. Por defecto true." },
+        "checkUnmentioned": { "type": "boolean", "description": "Avisar de funcionalidades activas con en_web que ninguna página menciona. Por defecto true." }
+      }
+    },
     "negationWords": { "type": "array", "items": { "type": "string" }, "description": "Si la frase contiene una, la promesa prohibida se da por negada." },
     "rules": {
       "type": "object",

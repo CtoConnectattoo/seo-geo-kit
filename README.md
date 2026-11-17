@@ -36,7 +36,20 @@ seo/
   geo-queries.json   8-10 preguntas GEO
   history/           datos brutos semanales (los escribe el colector)
   reports/           informes semanales (los escribe el agente)
+  producto/          opcional: funcionalidades.json, copia del catálogo de producto
 ```
+
+### Catálogo de producto (opcional)
+
+Si el producto mantiene un catálogo de funcionalidades junto a su código (p. ej. `hi.inkup` → `producto/funcionalidades.yaml`), su copia JSON va en `seo/producto/funcionalidades.json` o donde diga `config.product.catalog`. Con él:
+
+- `validate` resume el catálogo; `audit` añade comprobaciones con el prefijo `producto:`:
+  - **Error**: promesas prohibidas del catálogo y menciones de funcionalidades **retiradas** (como `forbiddenClaims`: no cuenta si la frase está negada ni si es una pregunta, p. ej. una FAQ).
+  - **Aviso**: páginas que mencionan funcionalidades **ocultas, en beta o en desarrollo**; cifras de planes que no existen (consultas al mes, asistentes, precios, días de prueba, según `coherencia`); funcionalidades **activas** con `en_web: true` que ninguna página indexable menciona (`config.product.checkUnmentioned: false` lo apaga).
+- El playbook lo usa para el criterio «Encaje con producto».
+- Sin catálogo, o con `config.product.enabled: false`, todo funciona como antes.
+
+Formato: `lib/product.mjs` (cabecera). Lo genera el repo del producto; no se edita a mano.
 
 Para dar de alta un proyecto, usa la skill personal `seo-geo-setup` de Claude Code.
 
