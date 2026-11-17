@@ -8,6 +8,7 @@ En la rutina tienes dos repos clonados: el **kit** (`seo-geo-kit`, este playbook
 
 1. Lee `$P/seo/config.json`. De ahí salen el dominio, la propiedad de Search Console, los mercados, el presupuesto, los umbrales, cómo se crea una página (`pageRecipe`) y lo que no se toca (`protectedPaths`).
 2. Lee **todas** las reglas de `config.rules.files` (normalmente `CLAUDE.md`) y, si están disponibles, las skills de `config.rules.skills`. **Mandan sobre este playbook**: claims, vocabulario, textos intocables, promesas prohibidas.
+   - Si el proyecto tiene **voz del cliente** (`seo/icp.md`, plantilla en `$KIT/templates/icp.md`), su vocabulario por país manda en titles, H1, descriptions, respuestas directas y preguntas GEO: escribe como busca y habla el cliente, no como habla la marca. Si no existe, dilo en el informe como pendiente.
 3. Lee `$P/seo/keywords.json`, `$P/seo/geo-queries.json` y los informes de las últimas 4 semanas en `$P/seo/reports/`.
 
 ## 1. Medir
@@ -45,6 +46,7 @@ Cada semana, como máximo `config.thresholds.weeklyLimits.newPages` páginas nue
 | Demanda | Volumen por mercado (`volumes.json` o `keywords.json`) e impresiones en GSC |
 | Tendencia | Crecimiento de 12 meses |
 | Encaje con producto | ¿El producto lo hace hoy, según las reglas del proyecto? Si no, se descarta (0 aquí descarta la candidata) |
+| Encaje con el ICP | Solo si existe `seo/icp.md`: ¿la keyword usa el vocabulario del cliente o resuelve uno de sus dolores? Una keyword genérica sin el ángulo del cliente puntúa 0 aquí (no descarta, pero baja) |
 | Se puede ganar | SERP (`serp.json`): si el top 10 son marcas grandes o la intención no encaja, baja |
 | Hueco | No hay ya una URL que la cubra; si la hay, se optimiza esa en vez de crear otra |
 

@@ -13,7 +13,7 @@ Node ≥ 20, sin dependencias.
 | `bin/validate.mjs` | Valida `config.json` (contra `schema/config.schema.json`), `keywords.json` y `geo-queries.json`. |
 | `schema/config.schema.json` | Esquema de `seo/config.json`, con la descripción de cada campo. |
 | `playbook/AGENT.md` | Instrucciones semanales del agente: medir, analizar, decidir, ejecutar e informar. |
-| `templates/` | `config.example.json`, `keywords.json`, `geo-queries.json`, `report.md` y `routine.md` (prompt y cuerpo de la rutina en la nube). |
+| `templates/` | `config.example.json`, `keywords.json`, `geo-queries.json`, `icp.md` (voz del cliente para SEO y GEO), `report.md` y `routine.md` (prompt y cuerpo de la rutina en la nube). |
 
 ## Uso
 
@@ -34,6 +34,7 @@ seo/
   config.json        dominio, propiedad GSC, mercados, tope de Apify, build, reglas de marca, receta de página…
   keywords.json      universo de keywords con volumen, URL asignada y papel
   geo-queries.json   8-10 preguntas GEO
+  icp.md             voz del cliente: vocabulario por país, demanda real y criterio de encaje (va en rules.files)
   history/           datos brutos semanales (los escribe el colector)
   reports/           informes semanales (los escribe el agente)
 ```
