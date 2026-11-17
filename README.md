@@ -47,12 +47,13 @@ Para dar de alta un proyecto, usa la skill personal `seo-geo-setup` de Claude Co
 
 ## Presupuesto de Apify
 
-La cuenta tiene un límite de **19 $/mes** para todos los proyectos. Cada proyecto pone su tope en `apify.monthlyBudgetUsd` (por defecto 6 $) y el colector lo respeta sumando sus propios `summary.json` del mes; no puede ver el gasto de los demás, así que el reparto se lleva aquí:
+La cuenta (plan Starter, de pago) tiene un límite de **100 $/mes** para todos los proyectos (antes 19 $; subido por el propietario en nov 2026). Cada proyecto pone su tope en `apify.monthlyBudgetUsd` (por defecto 6 $) y el colector lo respeta sumando sus propios `summary.json` del mes; no puede ver el gasto de los demás, así que el reparto se lleva aquí:
 
 | Proyecto | Tope ($/mes) | Gasto típico |
 |---|---|---|
 | Kalmaa | 6 (hoy 10 en su agente propio, hasta migrar) | ~1,7 $ la semana con volúmenes, ~0,3 $ el resto |
 | Inkup | 6 | — |
+| Milkah AI | 6 | ~1,6 $ la semana con volúmenes, ~0,4 $ el resto (alta 2026-11-17) |
 | Reserva | 7 | — |
 
 No subas el límite de la cuenta sin el propietario.
